@@ -5,12 +5,7 @@ import {
   handleDeleteClick,
   handleLikeClick,
 } from "../scripts/card.js";
-import {
-  openModal,
-  closeModal,
-  handleEscClose,
-  handleOverlayClose,
-} from "../scripts/modal.js";
+import { openModal, closeModal, handleOverlayClose } from "../scripts/modal.js";
 
 const placesList = document.querySelector(".places__list");
 
@@ -30,14 +25,37 @@ function renderCards(cardsList) {
 renderCards(initialCards);
 
 const editProfileForm = document.querySelector(".popup_type_edit");
+const closeProfileForm = editProfileForm.querySelector(".popup__close");
+
+closeProfileForm.addEventListener("click", onClickCloseProfileForm);
+function onClickCloseProfileForm() {
+  closeModal(editProfileForm);
+}
+
 const addCardForm = document.querySelector(".popup_type_new-card");
+const closeCardForm = addCardForm.querySelector(".popup__close");
+
+closeCardForm.addEventListener("click", onClickCloseCardForm);
+function onClickCloseCardForm() {
+  closeModal(addCardForm);
+}
+
 const overlays = document.querySelectorAll(".popup");
 const imagePopup = document.querySelector(".popup_type_image");
+const closeImagePopup = imagePopup.querySelector(".popup__close");
+
+closeImagePopup.addEventListener("click", onClickCloseImage);
+function onClickCloseImage() {
+  closeModal(imagePopup);
+}
+
 const imagePopupContent = imagePopup.querySelector(".popup__image");
 const imagePopupCaption = imagePopup.querySelector(".popup__caption");
 
 function openProfileModal() {
   openModal(editProfileForm);
+  nameInput.value = document.querySelector(".profile__title").textContent;
+  jobInput.value = document.querySelector(".profile__description").textContent;
 }
 
 function openCardModal() {
@@ -46,11 +64,10 @@ function openCardModal() {
 
 function openImageModal(clickEvent) {
   openModal(imagePopup);
-  const currentCard = clickEvent.target.closest(".card");
-  const cardTitle = currentCard.querySelector(".card__title");
-  const cardImage = currentCard.querySelector(".card__image");
-  imagePopupCaption.textContent = cardTitle.textContent;
+  const cardImage = clickEvent.target;
+  imagePopupCaption.textContent = cardImage.alt;
   imagePopupContent.src = cardImage.src;
+  imagePopupContent.alt = cardImage.alt;
 }
 
 overlays.forEach((popup) => {
@@ -70,11 +87,8 @@ const jobInput = editProfileForm.querySelector(
   ".popup__input_type_description"
 );
 
-nameInput.value = document.querySelector(".profile__title").textContent;
-jobInput.value = document.querySelector(".profile__description").textContent;
-
 // Обработчик «отправки» формы
-function handleFormSubmit(event) {
+function handleProfileFormSubmit(event) {
   event.preventDefault();
   document.querySelector(".profile__title").textContent = nameInput.value;
   document.querySelector(".profile__description").textContent = jobInput.value;
@@ -83,7 +97,7 @@ function handleFormSubmit(event) {
 }
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
-editProfileForm.addEventListener("submit", handleFormSubmit);
+editProfileForm.addEventListener("submit", handleProfileFormSubmit);
 
 // Находим поля формы в DOM
 const cardNameInput = addCardForm.querySelector(".popup__input_type_card-name");
@@ -93,9 +107,6 @@ const cardUrlInput = addCardForm.querySelector(".popup__input_type_url");
 function handleCardFormSubmit(event) {
   event.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
   const newCard = { name: cardNameInput.value, link: cardUrlInput.value };
-  cardNameInput.value = "";
-  cardUrlInput.value = "";
-  initialCards.unshift(newCard);
   const cardElement = createCard(
     newCard,
     handleDeleteClick,
@@ -105,6 +116,7 @@ function handleCardFormSubmit(event) {
   placesList.insertBefore(cardElement, placesList.firstChild);
 
   closeModal(addCardForm);
+  addCardForm.querySelector(".popup__form").reset();
 }
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»

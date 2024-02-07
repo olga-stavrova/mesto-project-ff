@@ -42,22 +42,36 @@
         <div class="popup__content">
           <button type="button" class="popup__close" aria-label="Закрыть форму редактирования профиля"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
-          <form class="popup__form" name="edit-profile">
+          <form class="popup__form" name="edit-profile" novalidate>
+            <label for="">
             <input
+              id="name-input"
+              pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
               type="text"
               name="name"
               class="popup__input popup__input_type_name"
               placeholder="Имя"
+              minlength="2" 
+              maxlength="40" 
               required
-            />
+            >
+            <span class="name-input-error popup__error_visible"></span>
+          </label>
+          <label for="">
             <input
+              id="description-input"
+              pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$" 
               type="text"
               name="description"
               class="popup__input popup__input_type_description"
-              placeholder="Занятие"
+              placeholder="Занятие" 
+              minlength="2" 
+              maxlength="200" 
               required
-            />
-            <button type="submit" class="button popup__button" aria-label="Сохранить">
+            >
+            <span class="description-input-error popup__error_visible"></span>
+          </label>
+            <button type="submit" class="button popup__button" aria-label="Сохранить"> <!--popup__button_inactive-->
               Сохранить
             </button>
           </form>
@@ -68,20 +82,31 @@
           <button type="button" class="popup__close" aria-label="Закрыть форму карточки"></button>
           <h3 class="popup__title">Новое место</h3>
           <form class="popup__form" name="new-place">
+            <label for="">
             <input
+            id="place-input"
+            pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$" 
               type="text"
               name="place-name"
               class="popup__input popup__input_type_card-name"
               placeholder="Название"
+              minlength="2" 
+              maxlength="30"
               required
-            />
+            >
+            <span class="place-input-error popup__error_visible"></span>
+          </label>
+          <label for="">
             <input
+            id="url-input"
               type="url"
               name="link"
               class="popup__input popup__input_type_url"
               placeholder="Ссылка на картинку"
               required
-            />
+            >
+            <span class="url-input-error popup__error_visible"></span>
+          </label>
             <button type="submit" class="button popup__button" aria-label="Сохранить">
               Сохранить
             </button>

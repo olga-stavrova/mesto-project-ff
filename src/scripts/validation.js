@@ -1,0 +1,118 @@
+export const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
+//валидация профайл формы
+const showInputError = (formElement, inputElement, errorMessage) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add(validationConfig.inputErrorClass);
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add(validationConfig.errorClass);
+};
+
+const hideInputError = (formElement, inputElement) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.remove(validationConfig.inputErrorClass);
+  errorElement.classList.remove(validationConfig.errorClass);
+  errorElement.textContent = "";
+};
+
+const checkInputValidity = (formElement, inputElement) => {
+  if (inputElement.validity.patternMismatch) {
+    // встроенный метод setCustomValidity принимает на вход строку и заменяет ею стандартное сообщение об ошибке
+    inputElement.setCustomValidity(
+      "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы."
+    );
+  } else {
+    // если передать пустую строку, то будут доступны стандартные браузерные сообщения
+    inputElement.setCustomValidity("");
+  }
+
+  if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+};
+
+const setEventListeners = (formElement, validationConfig) => {
+  //const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
+  const inputList = Array.from(
+    formElement.querySelectorAll(validationConfig.inputSelector)
+  );
+
+  const buttonElement = formElement.querySelector(
+    validationConfig.submitButtonSelector
+  );
+
+  toggleButtonState(inputList, buttonElement, validationConfig);
+
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener("input", function () {
+      checkInputValidity(formElement, inputElement);
+
+      toggleButtonState(inputList, buttonElement, validationConfig);
+    });
+  });
+};
+
+export const enableValidation = (validationConfig) => {
+  //const formList = Array.from(document.querySelectorAll('.popup__form'));
+  const formList = Array.from(
+    document.querySelectorAll(validationConfig.formSelector)
+  );
+  formList.forEach((formElement) => {
+    /*formElement.addEventListener('submit', function (evt) {
+        evt.preventDefault();
+      });*/
+    setEventListeners(formElement, validationConfig);
+  });
+};
+
+function hasInvalidInput(inputList) {
+  return inputList.some((inputElement) => {
+    // Если поле не валидно, колбэк вернёт true Обход массива прекратится и вся функция hasInvalidInput вернёт true
+    return !inputElement.validity.valid;
+  });
+}
+
+function toggleButtonState(inputList, buttonElement, validationConfig) {
+  if (hasInvalidInput(inputList)) {
+    // сделай кнопку неактивной
+    buttonElement.disabled = true;
+    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+  } else {
+    // иначе сделай кнопку активной
+    buttonElement.disabled = false;
+    buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+  }
+}
+
+export function clearValidation(formElement, validationConfig) {
+  const errorElements = formElement.querySelectorAll(
+    "." + validationConfig.errorClass
+  );
+  errorElements.forEach((errorElement) => {
+    errorElement.textContent = "";
+    errorElement.classList.remove(validationConfig.errorClass);
+  });
+  const inputList = Array.from(
+    formElement.querySelectorAll(validationConfig.inputSelector)
+  );
+  inputList.forEach((inputElement) => {
+    inputElement.classList.remove(validationConfig.inputErrorClass);
+  });
+
+  // Делаем кнопку неактивной
+  const buttonElement = formElement.querySelector(
+    validationConfig.submitButtonSelector
+  );
+
+  buttonElement.disabled = true;
+  buttonElement.classList.add(validationConfig.inactiveButtonClass);
+}

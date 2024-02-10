@@ -7,6 +7,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <title>Mesto</title>
     </head>
   <body class="page">
@@ -22,12 +23,12 @@
         <section class="profile page__section">
           <div
             class="profile__image"
-            style="background-image: url(<%=require('./images/avatar.jpg')%>);"
+            style="background-image: url(<%=require('./images/avatar.png')%>);"
           ></div>
           <div class="profile__info">
-            <h1 class="profile__title">Жак-Ив Кусто</h1>
+            <h1 class="profile__title">Имя</h1>
             <button class="profile__edit-button" type="button" aria-label="Редактировать профиль"></button>
-            <p class="profile__description">Исследователь океана</p>
+            <p class="profile__description">Занятие</p>
           </div>
           <button class="profile__add-button" type="button" aria-label="Добавить новую карточку"></button>
         </section>
@@ -121,6 +122,29 @@
         </div>
       </div>
     </div>
+    <div class="popup popup_edit_avatar">
+      <div class="popup__content">
+        <button type="button" class="popup__close" aria-label="Закрыть форму карточки"></button>
+        <h3 class="popup__title">Обновить аватар</h3>
+        <form class="popup__form" name="avatar">
+          
+        <label for="">
+          <input
+          id="url-input"
+            type="url"
+            name="link"
+            class="popup__input popup__input_type_url"
+            placeholder="Ссылка на аватар"
+            required
+          >
+          <span class="url-input-error popup__error_visible"></span>
+        </label>
+          <button type="submit" class="button popup__button" aria-label="Сохранить">
+            Сохранить
+          </button>
+        </form>
+      </div>
+    </div>
 
     <template id="card-template">
       <li class="places__item card">
@@ -128,7 +152,10 @@
         <button type="button" class="card__delete-button" aria-label="Удалить карточку"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
+          <div class="like_box">
           <button type="button" class="card__like-button" aria-label="Поставить/отменить лайк"></button>
+          <span class="likes_counter"></span>
+        </div>
         </div>
       </li>
     </template>

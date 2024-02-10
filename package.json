@@ -16,6 +16,7 @@
   },
   "author": "Olga Stavrova",
   "license": "ISC",
+  "homepage": "https://olga-stavrova.github.io/mesto-project-ff/",
   "devDependencies": {
     "@babel/core": "^7.23.7",
     "@webpack-cli/generators": "^3.0.7",

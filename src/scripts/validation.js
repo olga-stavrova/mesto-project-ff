@@ -7,7 +7,7 @@ export const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-//валидация профайл формы
+//Функции отображения ошибок валидации форм
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(validationConfig.inputErrorClass);
@@ -40,8 +40,29 @@ const checkInputValidity = (formElement, inputElement) => {
   }
 };
 
+//Функция проверки корректности данных в полях ввода
+function hasInvalidInput(inputList) {
+  return inputList.some((inputElement) => {
+    // Если поле не валидно, колбэк вернёт true Обход массива прекратится и вся функция hasInvalidInput вернёт true
+    return !inputElement.validity.valid;
+  });
+}
+
+//Функция изменения состояния кнопки сохранения
+function toggleButtonState(inputList, buttonElement, validationConfig) {
+  if (hasInvalidInput(inputList)) {
+    // сделай кнопку неактивной
+    buttonElement.disabled = true;
+    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+  } else {
+    // иначе сделай кнопку активной
+    buttonElement.disabled = false;
+    buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+  }
+}
+
+//Устанавливаем обработчики валидации для полей ввода активной формы
 const setEventListeners = (formElement, validationConfig) => {
-  //const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
   const inputList = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
@@ -55,44 +76,22 @@ const setEventListeners = (formElement, validationConfig) => {
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
       checkInputValidity(formElement, inputElement);
-
       toggleButtonState(inputList, buttonElement, validationConfig);
     });
   });
 };
 
+//Функция установки валидации для всех форм документа
 export const enableValidation = (validationConfig) => {
-  //const formList = Array.from(document.querySelectorAll('.popup__form'));
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
   );
   formList.forEach((formElement) => {
-    /*formElement.addEventListener('submit', function (evt) {
-        evt.preventDefault();
-      });*/
     setEventListeners(formElement, validationConfig);
   });
 };
 
-function hasInvalidInput(inputList) {
-  return inputList.some((inputElement) => {
-    // Если поле не валидно, колбэк вернёт true Обход массива прекратится и вся функция hasInvalidInput вернёт true
-    return !inputElement.validity.valid;
-  });
-}
-
-function toggleButtonState(inputList, buttonElement, validationConfig) {
-  if (hasInvalidInput(inputList)) {
-    // сделай кнопку неактивной
-    buttonElement.disabled = true;
-    buttonElement.classList.add(validationConfig.inactiveButtonClass);
-  } else {
-    // иначе сделай кнопку активной
-    buttonElement.disabled = false;
-    buttonElement.classList.remove(validationConfig.inactiveButtonClass);
-  }
-}
-
+//Функция очистки сообщений об ошибках валидации
 export function clearValidation(formElement, validationConfig) {
   const errorElements = formElement.querySelectorAll(
     "." + validationConfig.errorClass
@@ -108,7 +107,7 @@ export function clearValidation(formElement, validationConfig) {
     inputElement.classList.remove(validationConfig.inputErrorClass);
   });
 
-  // Делаем кнопку неактивной
+  // Делаем кнопку сохранения неактивной
   const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );

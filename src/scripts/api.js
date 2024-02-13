@@ -1,3 +1,6 @@
+//
+import { checkResponse } from "../scripts/utils.js";
+
 //Базовая конфигурация запросов к серверу
 const config = {
   baseUrl: "https://nomoreparties.co/v1/wff-cohort-6",
@@ -17,16 +20,11 @@ export function getAPIData() {
     fetch(`${config.baseUrl}/users/me`, {
       headers: config.headers,
     }),
-  ])
-    .then(async ([cards, user]) => {
-      result.cardsData = await cards.json();
-      result.userData = await user.json();
-      return result;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  ]).then(async ([cards, user]) => {
+    result.cardsData = await cards.json();
+    result.userData = await user.json();
+    return result;
+  });
 }
 
 //Функция изменения данных профиля пользователя на сервере
@@ -38,17 +36,7 @@ export function patchProfileData(nameData, aboutData) {
       name: nameData,
       about: aboutData,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }
 
 //Функция добавления карточки на сервере
@@ -60,17 +48,7 @@ export function addCardData(nameData, linkData) {
       name: nameData,
       link: linkData,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }
 
 //Функция удаления карточки с сервера
@@ -78,17 +56,7 @@ export function deleteCardData(cardDataId) {
   return fetch(`${config.baseUrl}/cards/${cardDataId}`, {
     method: "DELETE",
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }
 
 //Функция добавления лайка карточки с сохранением на сервере
@@ -96,17 +64,7 @@ export function likeCardData(cardId) {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "PUT",
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }
 
 //Функция снятия лайка карточки с сохранением на сервере
@@ -114,17 +72,7 @@ export function dislikeCardData(cardId) {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }
 
 //Функция изменения изображения аватара
@@ -135,15 +83,5 @@ export function changeAvatarData(avatarData) {
     body: JSON.stringify({
       avatar: avatarData,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return undefined;
-    })
-    .catch((err) => {
-      console.log(err);
-      return undefined;
-    });
+  }).then(checkResponse);
 }

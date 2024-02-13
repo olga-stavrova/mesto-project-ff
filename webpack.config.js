@@ -16,7 +16,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, "dist"),
     //publicPath: "/",
-    publicPath: "https://olga-stavrova.github.io/mesto-project-ff/",
+    //publicPath: "https://olga-stavrova.github.io/mesto-project-ff/",
   },
   devServer: {
     static: path.resolve(__dirname, "dist"),

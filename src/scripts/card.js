@@ -42,27 +42,42 @@ export function createCard(
       likeButton.classList.add("card__like-button_is-active");
     }
   });
-
   return cardElement;
 }
 
 //Функция удаления карточки
 export function handleDeleteClick(clickEvent) {
   const listItem = clickEvent.target.closest(".card");
-  listItem.remove();
-  deleteCardData(listItem.id);
+  deleteCardData(listItem.id)
+    .then(() => {
+      listItem.remove();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 //функция лайка карточки
 export function handleLikeClick(clickEvent) {
   const likeButton = clickEvent.target;
-  likeButton.classList.toggle("card__like-button_is-active");
   const cardElement = clickEvent.target.closest(".card");
   if (likeButton.classList.contains("card__like-button_is-active")) {
-    likeCardData(cardElement.id);
-    cardElement.querySelector(".likes_counter").textContent++;
+    dislikeCardData(cardElement.id)
+      .then(() => {
+        likeButton.classList.toggle("card__like-button_is-active");
+        cardElement.querySelector(".likes_counter").textContent--;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
-    dislikeCardData(cardElement.id);
-    cardElement.querySelector(".likes_counter").textContent--;
+    likeCardData(cardElement.id)
+      .then(() => {
+        likeButton.classList.toggle("card__like-button_is-active");
+        cardElement.querySelector(".likes_counter").textContent++;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }

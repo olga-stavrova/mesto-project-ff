@@ -20,6 +20,10 @@ import {
   changeAvatarData,
 } from "../scripts/api.js";
 
+import {
+  loadingButtonText,
+} from "../scripts/utils.js";
+
 const popupConfig = {
   closeSelector: ".popup__close",
   inputTypeUrlSelector: ".popup__input_type_url",
@@ -42,22 +46,31 @@ function renderCards(cardsList) {
   });
 }
 
-//Забираем данные с сервера
-const apiData = await getAPIData();
-const projectCards = apiData.cardsData;
-const userLocalData = apiData.userData;
+let apiData = { cardsData: [], userData: [] };
 
-//Отображаем данные профиля пользователя
+//Готовим данные профиля пользователя
 const userProfileURL = document.querySelector(".profile__image");
 const userTitle = document.querySelector(".profile__title");
 const userDescription = document.querySelector(".profile__description");
 
-userTitle.textContent = userLocalData.name;
-userDescription.textContent = userLocalData.about;
-userProfileURL.style.backgroundImage = `url(${userLocalData.avatar})`;
+//Забираем данные с сервера
+getAPIData()
+  .then((res) => {
+    apiData = res;
+    const projectCards = apiData.cardsData;
+    const userLocalData = apiData.userData;
 
-//Отображаем карточки на странице
-renderCards(projectCards);
+    //Отображаем данные профиля пользователя
+    userTitle.textContent = userLocalData.name;
+    userDescription.textContent = userLocalData.about;
+    userProfileURL.style.backgroundImage = `url(${userLocalData.avatar})`;
+
+    //Отображаем карточки на странице
+    renderCards(projectCards);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 //Готовим форму редактирования профиля
 const profileEditForm = document.querySelector(".popup_type_edit");
@@ -164,25 +177,24 @@ cardAddButton.addEventListener("click", openCardModal);
 
 userProfileURL.addEventListener("click", openAvatarModal);
 
-//Функция отображения процесса загрузки "сохранение..."
-function loadingButtonText(buttonElement) {
-  const buttonText = buttonElement.textContent;
-  buttonElement.textContent = "Сохранение...";
-  return buttonText;
-}
-
 // Обработчик «отправки» формы редактирования профиля
 function handleProfileFormSubmit(event) {
   event.preventDefault();
-  userTitle.textContent = nameInput.value;
-  userDescription.textContent = jobInput.value;
   const buttonElement = profileEditForm.querySelector(
     validationConfig.submitButtonSelector
   );
-  const savedText = loadingButtonText(buttonElement);
-  patchProfileData(nameInput.value, jobInput.value).finally(() => {
-    buttonElement.textContent = savedText;
-  });
+  const savedText = loadingButtonText(buttonElement, "Сохранение...");
+  patchProfileData(nameInput.value, jobInput.value)
+    .then(() => {
+      userTitle.textContent = nameInput.value;
+      userDescription.textContent = jobInput.value;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      buttonElement.textContent = savedText;
+    });
   closeModal(profileEditForm);
 }
 
@@ -197,7 +209,7 @@ function handleCardFormSubmit(event) {
   const buttonElement = cardAddForm.querySelector(
     validationConfig.submitButtonSelector
   );
-  const savedText = loadingButtonText(buttonElement);
+  const savedText = loadingButtonText(buttonElement, "Сохранение...");
   addCardData(cardNameInput.value, cardUrlInput.value)
     .then((data) => {
       newCard = data;
@@ -209,16 +221,15 @@ function handleCardFormSubmit(event) {
         openImageModal
       );
       placesList.insertBefore(cardElement, placesList.firstChild);
+      closeModal(cardAddForm);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       buttonElement.textContent = savedText;
+      cardAddForm.querySelector(validationConfig.formSelector).reset();
     });
-
-  closeModal(cardAddForm);
-  cardAddForm.querySelector(validationConfig.formSelector).reset();
 }
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
@@ -231,14 +242,19 @@ function handleAvatarFormSubmit(event) {
   const buttonElement = avatarEditForm.querySelector(
     validationConfig.submitButtonSelector
   );
-  const savedText = loadingButtonText(buttonElement);
-  userProfileURL.style.backgroundImage = `url(${avatarUrlInput.value})`;
-  changeAvatarData(avatarUrlInput.value).finally(() => {
-    buttonElement.textContent = savedText;
-  });
-
-  closeModal(avatarEditForm);
-  avatarEditForm.querySelector(validationConfig.formSelector).reset();
+  const savedText = loadingButtonText(buttonElement, "Сохранение...");
+  changeAvatarData(avatarUrlInput.value)
+    .then(() => {
+      userProfileURL.style.backgroundImage = `url(${avatarUrlInput.value})`;
+      closeModal(avatarEditForm);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      buttonElement.textContent = savedText;
+      avatarEditForm.querySelector(validationConfig.formSelector).reset();
+    });
 }
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»

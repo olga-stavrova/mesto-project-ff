@@ -1,20 +1,22 @@
-import { validationConfig } from "../scripts/validation.js";
+//import { validationConfig } from "../scripts/validation.js";
+
+const popupOpenedClass = "popup_is-opened";
 
 export function openModal(modal) {
-  modal.classList.add("popup_is-opened");
+  modal.classList.add(popupOpenedClass);
   document.addEventListener("keydown", handleEscClose);
 }
 
 export function closeModal(modal) {
-  modal.classList.remove("popup_is-opened");
+  modal.classList.remove(popupOpenedClass);
   document.removeEventListener("keydown", handleEscClose);
 }
 
 function handleEscClose(event) {
   if (event.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_is-opened");
+    const openedPopup = document.querySelector("." + popupOpenedClass);
     closeModal(openedPopup);
-    openedPopup.querySelector(validationConfig.formSelector).reset();
+    //resetForm(openedPopup); //исключено по требованию ревьюера
   }
 }
 
@@ -22,6 +24,15 @@ export function handleOverlayClose(event) {
   if (event.target === event.currentTarget) {
     const popup = event.target.closest(".popup");
     closeModal(popup);
-    popup.querySelector(validationConfig.formSelector).reset();
+    //resetForm(popup); //исключено по требованию ревьюера
   }
 }
+
+/*
+function resetForm(popupElement){
+  const popupForm = popupElement.querySelector(validationConfig.formSelector);
+  if(popupForm!==null){
+    popupForm.reset();
+  }
+}
+*/

@@ -63,18 +63,20 @@ export function handleLikeClick(clickEvent) {
   const cardElement = clickEvent.target.closest(".card");
   if (likeButton.classList.contains("card__like-button_is-active")) {
     dislikeCardData(cardElement.id)
-      .then(() => {
+      .then((res) => {
         likeButton.classList.toggle("card__like-button_is-active");
-        cardElement.querySelector(".likes_counter").textContent--;
+        cardElement.querySelector(".likes_counter").textContent =
+          res.likes.length;
       })
       .catch((err) => {
         console.log(err);
       });
   } else {
     likeCardData(cardElement.id)
-      .then(() => {
+      .then((res) => {
         likeButton.classList.toggle("card__like-button_is-active");
-        cardElement.querySelector(".likes_counter").textContent++;
+        cardElement.querySelector(".likes_counter").textContent =
+          res.likes.length;
       })
       .catch((err) => {
         console.log(err);

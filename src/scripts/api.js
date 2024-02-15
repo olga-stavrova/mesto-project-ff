@@ -1,4 +1,4 @@
-//
+//Функция обработки ответа промиса
 import { checkResponse } from "../scripts/utils.js";
 
 //Базовая конфигурация запросов к серверу
@@ -10,21 +10,20 @@ const config = {
   },
 };
 
-//Функция получения данных о пользователе и карточках с сервера/backend
+//Функции получения данных о пользователе и карточках с сервера/backend
+async function getCards() {
+  return fetch(`${config.baseUrl}/cards`, {
+    headers: config.headers,
+  }).then(checkResponse);
+}
+async function getUserInfo() {
+  return fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers,
+  }).then(checkResponse);
+}
+
 export function getAPIData() {
-  const result = { cardsData: [], userData: [] };
-  return Promise.all([
-    fetch(`${config.baseUrl}/cards`, {
-      headers: config.headers,
-    }),
-    fetch(`${config.baseUrl}/users/me`, {
-      headers: config.headers,
-    }),
-  ]).then(async ([cards, user]) => {
-    result.cardsData = await cards.json();
-    result.userData = await user.json();
-    return result;
-  });
+  return Promise.all([getCards(), getUserInfo()]);
 }
 
 //Функция изменения данных профиля пользователя на сервере

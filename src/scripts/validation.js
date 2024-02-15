@@ -52,8 +52,7 @@ function hasInvalidInput(inputList) {
 function toggleButtonState(inputList, buttonElement, validationConfig) {
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
-    buttonElement.disabled = true;
-    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    disableButton(buttonElement);
   } else {
     // иначе сделай кнопку активной
     buttonElement.disabled = false;
@@ -93,25 +92,22 @@ export const enableValidation = (validationConfig) => {
 
 //Функция очистки сообщений об ошибках валидации
 export function clearValidation(formElement, validationConfig) {
-  const errorElements = formElement.querySelectorAll(
-    "." + validationConfig.errorClass
-  );
-  errorElements.forEach((errorElement) => {
-    errorElement.textContent = "";
-    errorElement.classList.remove(validationConfig.errorClass);
-  });
+  //Выбираем все поля ввода
   const inputList = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
+  //Очищаем ошибки всех полей ввода
   inputList.forEach((inputElement) => {
-    inputElement.classList.remove(validationConfig.inputErrorClass);
+    hideInputError(formElement, inputElement);
   });
-
   // Делаем кнопку сохранения неактивной
   const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
+  disableButton(buttonElement);
+}
 
+function disableButton(buttonElement) {
   buttonElement.disabled = true;
   buttonElement.classList.add(validationConfig.inactiveButtonClass);
 }

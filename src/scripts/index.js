@@ -11,6 +11,8 @@ import {
   validationConfig,
   enableValidation,
   clearValidation,
+  disableButton,
+  checkInputValidity,
 } from "../scripts/validation.js";
 
 import {
@@ -66,9 +68,7 @@ await getAPIData()
     //Отображаем карточки на странице
     renderCards(projectCards, userLocalData);
   })
-  .catch((err) => {
-    console.log(err);
-  });
+  .catch(console.error);
 
 //Готовим форму редактирования профиля
 const profileEditPopup = document.querySelector(".popup_type_edit");
@@ -98,7 +98,6 @@ const cardForm = cardAddPopup.querySelector(validationConfig.formSelector);
 cardCloseButton.addEventListener("click", onClickCloseCardPopup);
 function onClickCloseCardPopup() {
   closeModal(cardAddPopup);
-  //cardAddPopup.querySelector(validationConfig.formSelector).reset(); //исключено по требованию ревьюера
 }
 
 //Описываем поля формы карточки
@@ -120,7 +119,6 @@ const avatarForm = avatarEditPopup.querySelector(validationConfig.formSelector);
 avatarCloseButton.addEventListener("click", onClickCloseAvatarPopup);
 function onClickCloseAvatarPopup() {
   closeModal(avatarEditPopup);
-  //avatarEditPopup.querySelector(validationConfig.formSelector).reset(); //исключено по требованию ревьюера
 }
 
 //Описываем поля формы аватара
@@ -147,16 +145,16 @@ function openProfileModal() {
   clearValidation(profileEditPopup, validationConfig);
   nameInput.value = userTitle.textContent;
   jobInput.value = userDescription.textContent;
+  checkInputValidity(profileEditPopup, nameInput);
+  checkInputValidity(profileEditPopup, jobInput);
 }
 
 function openCardModal() {
   openModal(cardAddPopup);
-  //clearValidation(cardAddPopup, validationConfig); //исключено по требованию ревьюера
 }
 
 function openAvatarModal() {
   openModal(avatarEditPopup);
-  //clearValidation(avatarEditPopup, validationConfig); //исключено по требованию ревьюера
 }
 
 function openImageModal(clickEvent) {
@@ -194,10 +192,9 @@ function handleProfileSubmitButton(event) {
       userTitle.textContent = nameInput.value;
       userDescription.textContent = jobInput.value;
       closeModal(profileEditPopup);
+      disableButton(buttonElement, validationConfig);
     })
-    .catch((err) => {
-      console.log(err);
-    })
+    .catch(console.error)
     .finally(() => {
       buttonElement.textContent = savedText;
     });
@@ -225,10 +222,9 @@ function handleCardSubmitButton(event) {
       placesList.insertBefore(cardElement, placesList.firstChild);
       closeModal(cardAddPopup);
       cardForm.reset();
+      disableButton(buttonElement, validationConfig);
     })
-    .catch((err) => {
-      console.log(err);
-    })
+    .catch(console.error)
     .finally(() => {
       buttonElement.textContent = savedText;
     });
@@ -248,10 +244,9 @@ function handleAvatarSubmitButton(event) {
       userProfileURL.style.backgroundImage = `url(${avatarUrlInput.value})`;
       closeModal(avatarEditPopup);
       avatarForm.reset();
+      disableButton(buttonElement, validationConfig);
     })
-    .catch((err) => {
-      console.log(err);
-    })
+    .catch(console.error)
     .finally(() => {
       buttonElement.textContent = savedText;
     });

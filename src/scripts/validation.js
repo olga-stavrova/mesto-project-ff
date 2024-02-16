@@ -22,7 +22,7 @@ const hideInputError = (formElement, inputElement) => {
   errorElement.textContent = "";
 };
 
-const checkInputValidity = (formElement, inputElement) => {
+export const checkInputValidity = (formElement, inputElement) => {
   if (inputElement.validity.patternMismatch) {
     // встроенный метод setCustomValidity принимает на вход строку и заменяет ею стандартное сообщение об ошибке
     inputElement.setCustomValidity(
@@ -52,7 +52,7 @@ function hasInvalidInput(inputList) {
 function toggleButtonState(inputList, buttonElement, validationConfig) {
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
-    disableButton(buttonElement);
+    disableButton(buttonElement, validationConfig);
   } else {
     // иначе сделай кнопку активной
     buttonElement.disabled = false;
@@ -70,7 +70,7 @@ const setEventListeners = (formElement, validationConfig) => {
     validationConfig.submitButtonSelector
   );
 
-  toggleButtonState(inputList, buttonElement, validationConfig);
+  //toggleButtonState(inputList, buttonElement, validationConfig);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
@@ -104,10 +104,10 @@ export function clearValidation(formElement, validationConfig) {
   const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
-  disableButton(buttonElement);
+  disableButton(buttonElement, validationConfig);
 }
 
-function disableButton(buttonElement) {
+export function disableButton(buttonElement, validationConfig) {
   buttonElement.disabled = true;
   buttonElement.classList.add(validationConfig.inactiveButtonClass);
 }

@@ -52,9 +52,7 @@ export function handleDeleteClick(clickEvent) {
     .then(() => {
       listItem.remove();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch(console.error);
 }
 
 //функция лайка карточки
@@ -68,9 +66,7 @@ export function handleLikeClick(clickEvent) {
         cardElement.querySelector(".likes_counter").textContent =
           res.likes.length;
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(console.error);
   } else {
     likeCardData(cardElement.id)
       .then((res) => {
@@ -78,8 +74,6 @@ export function handleLikeClick(clickEvent) {
         cardElement.querySelector(".likes_counter").textContent =
           res.likes.length;
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(console.error);
   }
 }
